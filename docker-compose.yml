@@ -1,0 +1,72 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: pupero-matrix-db
+    environment:
+      POSTGRES_USER: synapse
+      POSTGRES_PASSWORD: synapse
+      POSTGRES_DB: synapse
+    volumes:
+      - synapse_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U synapse -d synapse"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  synapse-init:
+    image: matrixdotorg/synapse:latest
+    container_name: pupero-matrix-init
+    environment:
+      SYNAPSE_SERVER_NAME: localhost
+      SYNAPSE_REPORT_STATS: "no"
+    volumes:
+      - synapse_data:/data
+    command: ["generate"]
+    restart: "no"
+
+  synapse:
+    image: matrixdotorg/synapse:latest
+    container_name: pupero-matrix-synapse
+    depends_on:
+      db:
+        condition: service_healthy
+      synapse-init:
+        condition: service_completed_successfully
+    environment:
+      SYNAPSE_SERVER_NAME: localhost
+      SYNAPSE_REPORT_STATS: "no"
+    ports:
+      - "8008:8008"   # client (HTTP, no TLS)
+    volumes:
+      - synapse_data:/data
+      - ./synapse.overrides.yaml:/data/synapse.overrides.yaml:ro,z
+    command: [
+      "run",
+      "--config-path", "/data/homeserver.yaml",
+      "--config-path", "/data/synapse.overrides.yaml"
+    ]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8008/_matrix/client/versions >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 60
+      start_period: 20s
+
+  # Optional: Element Web for a simple local client UI
+  element:
+    image: vectorim/element-web:latest
+    container_name: pupero-matrix-element
+    depends_on:
+      synapse:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    volumes:
+      - ./element-config.json:/app/config.json:ro
+
+volumes:
+  synapse_data:
+  synapse_db:
