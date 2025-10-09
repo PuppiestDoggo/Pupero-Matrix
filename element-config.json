@@ -1,9 +1,12 @@
 {
   "default_server_config": {
-    "m.homeserver": { "base_url": "http://localhost:8008", "server_name": "localhost" }
+    "m.homeserver": {
+      "base_url": "http://localhost:8008",
+      "server_name": "localhost"
+    }
   },
-  "disable_custom_urls": true,
-  "disable_guests": true,
-  "defaultCountryCode": "US",
-  "brand": "Element Local"
+  "disable_custom_urls": false,
+  "disable_3pid_login": true,
+  "brand": "Pupero Chat",
+  "default_theme": "light"
 }
