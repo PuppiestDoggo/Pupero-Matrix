@@ -1,12 +1,12 @@
 {
   "default_server_config": {
     "m.homeserver": {
-      "base_url": "http://localhost:8008",
-      "server_name": "localhost"
+      "base_url": "https://pupero.replay.dog/matrix",
+      "server_name": "Pupero"
     }
   },
   "disable_custom_urls": false,
   "disable_3pid_login": true,
   "brand": "Pupero Chat",
-  "default_theme": "light"
+  "default_theme": "dark"
 }
