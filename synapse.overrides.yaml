@@ -22,3 +22,9 @@ enable_registration_without_verification: true
 registration_shared_secret: "dev-shared-secret-change-me"
 
 report_stats: false
+
+# Use SQLite database (default, no PostgreSQL)
+database:
+  name: sqlite3
+  args:
+    database: /data/homeserver.db
