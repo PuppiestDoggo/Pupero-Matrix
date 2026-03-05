@@ -1,7 +1,7 @@
 {
   "default_server_config": {
     "m.homeserver": {
-      "base_url": "http://192.168.122.36:5000/matrix",
+      "base_url": "https://pupero.replay.dog/matrix",
       "server_name": "Pupero"
     }
   },
